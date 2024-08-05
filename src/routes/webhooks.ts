@@ -6,6 +6,7 @@ const app = new Hono();
 
 app.get("/", async (c) => {
   const users = await db.select().from(user);
+
   return c.json({ message: "Hello webhooks", users });
 });
 

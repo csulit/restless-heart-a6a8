@@ -13,7 +13,7 @@ const getPoolConnection = () => {
       database: process.env.DB_NAME,
       password: process.env.DB_PASSWORD,
       waitForConnections: true,
-      connectionLimit: 10, // Adjust based on your database's capacity
+      connectionLimit: 50, // Adjust based on your database's capacity
       queueLimit: 0,
     });
   }
