@@ -15,6 +15,20 @@
       "when": 1722892501782,
       "tag": "0001_glorious_eddie_brock",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1722894675382,
+      "tag": "0002_dear_charles_xavier",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1722895728997,
+      "tag": "0003_spooky_agent_brand",
+      "breakpoints": true
     }
   ]
 }
