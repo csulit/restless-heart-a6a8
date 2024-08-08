@@ -10,8 +10,8 @@ interface StDistanceSphereArgs {
   maxLat: number;
   minLong: number;
   maxLong: number;
-  lat: number;
-  long: number;
+  pointOfInterestLat: number;
+  pointOfInterestLong: number;
   distanceInMiles: number;
 }
 
@@ -20,38 +20,35 @@ const stDistanceSphere = async ({
   maxLat,
   minLong,
   maxLong,
-  lat,
-  long,
+  pointOfInterestLat,
+  pointOfInterestLong,
   distanceInMiles,
 }: StDistanceSphereArgs) => {
   return await db
-    .select()
+    .select({
+      id: property.id,
+      latitude: property.latitude,
+      longitude: property.longitude,
+      primaryImageUrl: property.primaryImageUrl,
+      jsonData: sql`JSON_EXTRACT(${property.jsonData}, '$.title')`,
+    })
     .from(property)
     .where(
       and(
         between(property.latitude, minLat, maxLat),
         between(property.longitude, minLong, maxLong),
         sql`ST_distance_sphere(
-          point(${long}, ${lat}), 
+          point(${pointOfInterestLong}, ${pointOfInterestLat}), 
           point(${property.longitude}, ${property.latitude})
         ) * 0.000621371192 < ${distanceInMiles}`
       )
-    )
-    .limit(100);
+    );
 };
 
-app.get("/", async (c) => {
-  const testArgs: StDistanceSphereArgs = {
-    minLat: 34.0,
-    maxLat: 36.0,
-    minLong: -118.0,
-    maxLong: -116.0,
-    lat: 34.052235,
-    long: -118.243683,
-    distanceInMiles: 10,
-  };
-  const properties = await stDistanceSphere(testArgs);
-  return c.json({ message: "Hello webhooks", properties });
+app.get("/properties/map-search", async (c) => {
+  const query = c.req.query() as unknown as StDistanceSphereArgs;
+  const properties = await stDistanceSphere(query);
+  return c.json({ properties });
 });
 
 app.post("/properties", async (c) => {
