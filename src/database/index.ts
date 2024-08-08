@@ -1,6 +1,7 @@
 import { drizzle } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
 import * as schema from "./schema";
+import { connect } from "bun";
 
 // Create the connection pool outside the function handler
 let poolConnection: mysql.Pool | null = null;
@@ -13,7 +14,7 @@ const getPoolConnection = () => {
       database: process.env.DB_NAME,
       password: process.env.DB_PASSWORD,
       waitForConnections: true,
-      connectionLimit: 50, // Adjust based on your database's capacity
+      connectionLimit: 10, // Adjust based on your database's capacity
       queueLimit: 0,
     });
   }

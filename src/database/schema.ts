@@ -18,6 +18,26 @@ export const user = mysqlTable("users", {
 
 export type User = InferSelectModel<typeof user>;
 
+export type LamudiDataLayer = {
+  attributes: {
+    name: string;
+    price: number;
+    image_url: string;
+    land_size: number;
+    agent_name: string;
+    agency_name: string;
+    building_size?: number;
+    offer_type: string;
+    subcategory: string;
+    project_name?: string;
+    urlkey_details: string;
+    price_formatted: string;
+    location_latitude: string;
+    location_longitude: string;
+    attribute_set_name: string;
+  };
+};
+
 export const property = mysqlTable(
   "properties",
   {
@@ -25,7 +45,7 @@ export const property = mysqlTable(
     longitude: float("longitude").notNull(),
     latitude: float("latitude").notNull(),
     primaryImageUrl: varchar("primary_image_url", { length: 255 }),
-    jsonData: json("json").$type<{ foo: string }>(),
+    jsonData: json("json").$type<LamudiDataLayer>(),
     createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
   },
   (table) => ({

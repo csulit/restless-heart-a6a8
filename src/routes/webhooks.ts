@@ -15,7 +15,7 @@ interface StDistanceSphereArgs {
   distanceInMiles: number;
 }
 
-const stDistanceSphere = ({
+const stDistanceSphere = async ({
   minLat,
   maxLat,
   minLong,
@@ -24,7 +24,7 @@ const stDistanceSphere = ({
   long,
   distanceInMiles,
 }: StDistanceSphereArgs) => {
-  return db
+  return await db
     .select()
     .from(property)
     .where(
@@ -55,23 +55,16 @@ app.get("/", async (c) => {
 });
 
 app.post("/properties", async (c) => {
-  return c.json({ message: "Hello webhooks" });
+  const data = await c.req.json();
+
+  const create = await db.insert(property).values({
+    latitude: data.latitude,
+    longitude: data.longitude,
+    primaryImageUrl: data.primaryImageUrl,
+    jsonData: data.jsonData,
+  });
+
+  return c.json({ message: "Hello webhooks", created: create });
 });
 
 export default app;
-
-/**
- * select * from addresses
- * where
- *  latitude between <min_lat> and <min_lat>
- * and
- *  longitude between <min_long> and <max_long>
- * and
- *   ST_distance_sphere(
- *     point(<long>, <lat>),
- *     point(longitude, latitude)
- * ) * 0.000621371192 < 10
- *
- * alter table properties add index lat(latitude);
- * alter table properties add index long(longitude);
- */
