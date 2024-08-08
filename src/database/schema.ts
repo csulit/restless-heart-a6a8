@@ -19,6 +19,8 @@ export const user = mysqlTable("users", {
 export type User = InferSelectModel<typeof user>;
 
 export type LamudiDataLayer = {
+  agent_id: number;
+  agent_name: string;
   attributes: {
     name: string;
     price: number;
@@ -36,6 +38,17 @@ export type LamudiDataLayer = {
     location_longitude: string;
     attribute_set_name: string;
   };
+  description: {
+    characters: number;
+    text: string;
+    words: number;
+  };
+  location: {
+    area: string;
+    city: string;
+    region: string;
+  };
+  title: string;
 };
 
 export const property = mysqlTable(
