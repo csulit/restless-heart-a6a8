@@ -42,7 +42,8 @@ const stDistanceSphere = async ({
           point(${property.longitude}, ${property.latitude})
         ) * 0.000621371192 < ${distanceInMiles}`
       )
-    );
+    )
+    .limit(100);
 };
 
 app.get("/properties/map-search", async (c) => {
