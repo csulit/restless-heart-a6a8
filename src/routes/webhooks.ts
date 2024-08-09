@@ -48,7 +48,7 @@ const stDistanceSphere = async ({
         sql`ST_distance_sphere(
           point(${pointOfInterestLong}, ${pointOfInterestLat}), 
           point(${property.longitude}, ${property.latitude})
-        ) * 0.000621371192 < ${distanceInMiles}`,
+        ) * 0.000621371192 <= ${distanceInMiles}`,
         cursor ? gt(property.id, cursor) : undefined,
         prevCursor ? lt(property.id, prevCursor) : undefined
       )
