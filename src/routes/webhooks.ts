@@ -40,6 +40,9 @@ const stDistanceSphere = async ({
       primaryImageUrl: property.primaryImageUrl,
       title: sql`JSON_EXTRACT(${property.jsonData}, '$.title')`,
       price: sql`JSON_EXTRACT(${property.jsonData}, '$.attributes.price_formatted')`,
+      area: sql`REPLACE(IFNULL(JSON_EXTRACT(${property.jsonData}, '$.location.area'), ''), '"', '')`,
+      city: sql`REPLACE(IFNULL(JSON_EXTRACT(${property.jsonData}, '$.location.city'), ''), '"', '')`,
+      region: sql`REPLACE(IFNULL(JSON_EXTRACT(${property.jsonData}, '$.location.region'), ''), '"', '')`,
     })
     .from(property)
     .where(
