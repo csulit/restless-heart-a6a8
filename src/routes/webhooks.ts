@@ -38,7 +38,8 @@ const stDistanceSphere = async ({
       latitude: property.latitude,
       longitude: property.longitude,
       primaryImageUrl: property.primaryImageUrl,
-      jsonData: sql`JSON_EXTRACT(${property.jsonData}, '$.title')`,
+      title: sql`JSON_EXTRACT(${property.jsonData}, '$.title')`,
+      price: sql`JSON_EXTRACT(${property.jsonData}, '$.attributes.price_formatted')`,
     })
     .from(property)
     .where(
