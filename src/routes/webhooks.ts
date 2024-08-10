@@ -14,6 +14,7 @@ interface StDistanceSphereArgs {
   pointOfInterestLat: number;
   pointOfInterestLong: number;
   distanceInMiles: number;
+  offerType?: string;
   cursor?: number; // Optional cursor parameter
   prevCursor?: number; // Optional prevCursor parameter
 }
@@ -26,6 +27,7 @@ const stDistanceSphere = async ({
   pointOfInterestLat,
   pointOfInterestLong,
   distanceInMiles,
+  offerType,
   cursor,
   prevCursor,
 }: StDistanceSphereArgs) => {
@@ -52,7 +54,7 @@ const stDistanceSphere = async ({
       latitude: property.latitude,
       longitude: property.longitude,
       primaryImageUrl: property.primaryImageUrl,
-      offer_type: sql`JSON_EXTRACT(${property.jsonData}, '$.attributes.offer_type')`,
+      offerType: sql`JSON_EXTRACT(${property.jsonData}, '$.attributes.offer_type')`,
       title: sql`JSON_EXTRACT(${property.jsonData}, '$.title')`,
       price: sql`JSON_EXTRACT(${property.jsonData}, '$.attributes.price_formatted')`,
       area: sql`JSON_EXTRACT(${property.jsonData}, '$.location.area')`,
@@ -69,6 +71,9 @@ const stDistanceSphere = async ({
           point(${pointOfInterestLong}, ${pointOfInterestLat}), 
           point(${property.longitude}, ${property.latitude})
         ) * 0.000621371192 <= ${distanceInMiles}`,
+        offerType
+          ? sql`JSON_EXTRACT(${property.jsonData}, '$.attributes.offer_type') = ${offerType}`
+          : undefined,
         cursor ? gt(property.id, cursor) : undefined,
         prevCursor ? lt(property.id, prevCursor) : undefined
       )
