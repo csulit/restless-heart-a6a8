@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import db from "@/database";
 import { property } from "@/database/schema";
 import { and, between, desc, gt, lt, sql } from "drizzle-orm";
+import type { MySqlSelect } from "drizzle-orm/mysql-core";
 
 const app = new Hono();
 
@@ -32,6 +33,19 @@ const stDistanceSphere = async ({
     return "Invalid cursor";
   }
 
+  function withBoundingboxSearch<T extends MySqlSelect>(qb: T) {
+    return qb.where(
+      and(
+        between(property.latitude, minLat, maxLat),
+        between(property.longitude, minLong, maxLong),
+        sql`ST_distance_sphere(
+          point(${pointOfInterestLong}, ${pointOfInterestLat}), 
+          point(${property.longitude}, ${property.latitude})
+        ) * 0.000621371192 <= ${distanceInMiles}`
+      )
+    );
+  }
+
   const query = db
     .select({
       id: property.id,
@@ -40,9 +54,10 @@ const stDistanceSphere = async ({
       primaryImageUrl: property.primaryImageUrl,
       title: sql`JSON_EXTRACT(${property.jsonData}, '$.title')`,
       price: sql`JSON_EXTRACT(${property.jsonData}, '$.attributes.price_formatted')`,
-      area: sql`REPLACE(IFNULL(JSON_EXTRACT(${property.jsonData}, '$.location.area'), ''), '"', '')`,
-      city: sql`REPLACE(IFNULL(JSON_EXTRACT(${property.jsonData}, '$.location.city'), ''), '"', '')`,
-      region: sql`REPLACE(IFNULL(JSON_EXTRACT(${property.jsonData}, '$.location.region'), ''), '"', '')`,
+      area: sql`JSON_EXTRACT(${property.jsonData}, '$.location.area')`,
+      city: sql`JSON_EXTRACT(${property.jsonData}, '$.location.city')`,
+      region: sql`JSON_EXTRACT(${property.jsonData}, '$.location.region')`,
+      href: sql`CONCAT('https://lamudi.com.ph/', REPLACE(IFNULL(JSON_EXTRACT(${property.jsonData}, '$.attributes.urlkey_details'), ''), '"', ''))`,
     })
     .from(property)
     .where(
