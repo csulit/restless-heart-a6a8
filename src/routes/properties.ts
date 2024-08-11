@@ -112,18 +112,7 @@ const stDistanceSphere = async ({
   };
 };
 
-app.get("/properties/map-search", async (c) => {
-  const query = c.req.query() as unknown as StDistanceSphereArgs;
-  const properties = await stDistanceSphere(query);
-
-  if (properties === "Invalid cursor") {
-    return c.json({ message: "Invalid cursor" }, 400);
-  }
-
-  return c.json({ properties });
-});
-
-app.post("/properties", async (c) => {
+app.post("/", async (c) => {
   const data = await c.req.json();
 
   const create = await db.insert(property).values({
@@ -134,6 +123,17 @@ app.post("/properties", async (c) => {
   });
 
   return c.json({ message: "Hello webhooks", created: create });
+});
+
+app.get("/map-search", async (c) => {
+  const query = c.req.query() as unknown as StDistanceSphereArgs;
+  const properties = await stDistanceSphere(query);
+
+  if (properties === "Invalid cursor") {
+    return c.json({ message: "Invalid cursor" }, 400);
+  }
+
+  return c.json({ properties });
 });
 
 export default app;

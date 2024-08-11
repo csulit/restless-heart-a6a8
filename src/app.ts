@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { logger } from "hono/logger";
 
-import webhooks from "@/routes/webhooks";
+import properties from "@/routes/properties";
 import { sentry, type Options as SentryOptions } from "@hono/sentry";
 
 const SENTRY_OPTIONS: SentryOptions = {
@@ -17,6 +17,6 @@ app.get("/", (c) => {
   return c.json({ message: "Hello world" });
 });
 
-app.route("/webhooks", webhooks);
+app.route("/properties", properties);
 
 export default app;
