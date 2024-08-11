@@ -43,7 +43,7 @@ const stDistanceSphere = async ({
         sql`ST_distance_sphere(
           point(${pointOfInterestLong}, ${pointOfInterestLat}), 
           point(${property.longitude}, ${property.latitude})
-        ) * 0.001 <= ${distanceInKilometers}`
+        ) * 0.000621371192 <= ${distanceInKilometers}`
       )
     );
   }
