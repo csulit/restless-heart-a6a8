@@ -13,7 +13,7 @@ interface StDistanceSphereArgs {
   maxLong: number;
   pointOfInterestLat: number;
   pointOfInterestLong: number;
-  distanceInMiles: number;
+  distanceInKilometers: number;
   offerType?: string;
   cursor?: number; // Optional cursor parameter
   prevCursor?: number; // Optional prevCursor parameter
@@ -26,7 +26,7 @@ const stDistanceSphere = async ({
   maxLong,
   pointOfInterestLat,
   pointOfInterestLong,
-  distanceInMiles,
+  distanceInKilometers,
   offerType,
   cursor,
   prevCursor,
@@ -43,7 +43,7 @@ const stDistanceSphere = async ({
         sql`ST_distance_sphere(
           point(${pointOfInterestLong}, ${pointOfInterestLat}), 
           point(${property.longitude}, ${property.latitude})
-        ) * 0.000621371192 <= ${distanceInMiles}`
+        ) * 0.001 <= ${distanceInKilometers}`
       )
     );
   }
@@ -70,7 +70,7 @@ const stDistanceSphere = async ({
         sql`ST_distance_sphere(
           point(${pointOfInterestLong}, ${pointOfInterestLat}), 
           point(${property.longitude}, ${property.latitude})
-        ) * 0.000621371192 <= ${distanceInMiles}`,
+        ) * 0.001 <= ${distanceInKilometers}`,
         offerType
           ? sql`JSON_EXTRACT(${property.jsonData}, '$.attributes.offer_type') = ${offerType}`
           : undefined,
@@ -114,8 +114,8 @@ const stDistanceSphere = async ({
 
 app.get("/properties/map-search", async (c) => {
   const query = c.req.query() as unknown as StDistanceSphereArgs;
-
   const properties = await stDistanceSphere(query);
+
   if (properties === "Invalid cursor") {
     return c.json({ message: "Invalid cursor" }, 400);
   }
