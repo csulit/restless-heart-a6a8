@@ -43,7 +43,7 @@ const stDistanceSphere = async ({
         sql`ST_distance_sphere(
           point(${pointOfInterestLong}, ${pointOfInterestLat}), 
           point(${property.longitude}, ${property.latitude})
-        ) * 0.000621371192 <= ${distanceInKilometers}`
+        ) * 0.001 <= ${distanceInKilometers}`
       )
     );
   }
@@ -70,7 +70,7 @@ const stDistanceSphere = async ({
         sql`ST_distance_sphere(
           point(${pointOfInterestLong}, ${pointOfInterestLat}), 
           point(${property.longitude}, ${property.latitude})
-        ) * 0.000621371192 <= ${distanceInKilometers}`,
+        ) * 0.001 <= ${distanceInKilometers}`,
         offerType
           ? sql`JSON_EXTRACT(${property.jsonData}, '$.attributes.offer_type') = ${offerType}`
           : undefined,
