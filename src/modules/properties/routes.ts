@@ -5,7 +5,7 @@ import { zValidator } from "@hono/zod-validator";
 import { MapSearchQuerySchema } from "./interface/map-search-query";
 import { destrucZodIssue } from "@/utils/destruc-zod-issue";
 import { propertyMapSearch } from "./services";
-import { jsonError } from "@/core";
+import { jsonError, jsonSuccess } from "@/core";
 
 const app = new Hono();
 
@@ -21,7 +21,12 @@ app.post("/", async (c) => {
     primaryImageUrl: data.primaryImageUrl,
     jsonData: data.jsonData,
   });
-  return c.json({ message: "Hello webhooks", created: create });
+  return c.json(
+    jsonSuccess({
+      status: "success",
+      data: { id: create[0].insertId },
+    })
+  );
 });
 
 app.get(
