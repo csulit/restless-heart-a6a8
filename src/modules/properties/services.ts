@@ -1,8 +1,8 @@
 import db from "@/database";
-import type { MapSearchQuery } from "@/interface";
 import { and, between, desc, gt, lt, sql } from "drizzle-orm";
 import type { MySqlSelect } from "drizzle-orm/mysql-core";
 import { property } from "@/database/schema";
+import type { MapSearchQuery } from "./interface/map-search-query";
 
 export const stDistanceSphere = async ({
   minLat,
@@ -16,10 +16,6 @@ export const stDistanceSphere = async ({
   cursor,
   prevCursor,
 }: MapSearchQuery) => {
-  if (cursor && prevCursor) {
-    return "Invalid cursor";
-  }
-
   function withBoundingboxSearch<T extends MySqlSelect>(qb: T) {
     return qb.where(
       and(
