@@ -4,7 +4,7 @@ import type { MySqlSelect } from "drizzle-orm/mysql-core";
 import { property } from "@/database/schema";
 import type { MapSearchQuery } from "./interface/map-search-query";
 
-export const stDistanceSphere = async ({
+export const propertyMapSearch = async ({
   minLat,
   maxLat,
   minLong,

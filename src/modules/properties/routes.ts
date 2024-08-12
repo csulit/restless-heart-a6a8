@@ -4,7 +4,7 @@ import { property } from "@/database/schema";
 import { zValidator } from "@hono/zod-validator";
 import { MapSearchQuerySchema } from "./interface/map-search-query";
 import { destrucZodIssue } from "@/utils/destruc-zod-issue";
-import { stDistanceSphere } from "./services";
+import { propertyMapSearch } from "./services";
 import { jsonError } from "@/core";
 
 const app = new Hono();
@@ -40,7 +40,7 @@ app.get(
   }),
   async (c) => {
     const query = c.req.valid("query");
-    const properties = await stDistanceSphere(query);
+    const properties = await propertyMapSearch(query);
     return c.json({ properties });
   }
 );
