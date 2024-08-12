@@ -21,7 +21,6 @@ app.post("/", async (c) => {
     primaryImageUrl: data.primaryImageUrl,
     jsonData: data.jsonData,
   });
-
   return c.json({ message: "Hello webhooks", created: create });
 });
 
@@ -41,9 +40,7 @@ app.get(
   }),
   async (c) => {
     const query = c.req.valid("query");
-
     const properties = await stDistanceSphere(query);
-
     return c.json({ properties });
   }
 );
