@@ -1,25 +1,10 @@
-import { Hono } from "hono";
 import db from "@/database";
-import { property } from "@/database/schema";
+import type { MapSearchQuery } from "@/interface";
 import { and, between, desc, gt, lt, sql } from "drizzle-orm";
 import type { MySqlSelect } from "drizzle-orm/mysql-core";
+import { property } from "@/database/schema";
 
-const app = new Hono();
-
-interface StDistanceSphereArgs {
-  minLat: number;
-  maxLat: number;
-  minLong: number;
-  maxLong: number;
-  pointOfInterestLat: number;
-  pointOfInterestLong: number;
-  distanceInKilometers: number;
-  offerType?: string;
-  cursor?: number;
-  prevCursor?: number;
-}
-
-const stDistanceSphere = async ({
+export const stDistanceSphere = async ({
   minLat,
   maxLat,
   minLong,
@@ -30,7 +15,7 @@ const stDistanceSphere = async ({
   offerType,
   cursor,
   prevCursor,
-}: StDistanceSphereArgs) => {
+}: MapSearchQuery) => {
   if (cursor && prevCursor) {
     return "Invalid cursor";
   }
@@ -111,29 +96,3 @@ const stDistanceSphere = async ({
     prevCursor: prevCursorValue,
   };
 };
-
-app.post("/", async (c) => {
-  const data = await c.req.json();
-
-  const create = await db.insert(property).values({
-    latitude: data.latitude,
-    longitude: data.longitude,
-    primaryImageUrl: data.primaryImageUrl,
-    jsonData: data.jsonData,
-  });
-
-  return c.json({ message: "Hello webhooks", created: create });
-});
-
-app.get("/map-search", async (c) => {
-  const query = c.req.query() as unknown as StDistanceSphereArgs;
-  const properties = await stDistanceSphere(query);
-
-  if (properties === "Invalid cursor") {
-    return c.json({ message: "Invalid cursor" }, 400);
-  }
-
-  return c.json({ properties });
-});
-
-export default app;

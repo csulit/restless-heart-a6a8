@@ -1,6 +1,5 @@
 import { Hono } from "hono";
 import { logger } from "hono/logger";
-
 import properties from "@/routes/properties";
 import { sentry, type Options as SentryOptions } from "@hono/sentry";
 

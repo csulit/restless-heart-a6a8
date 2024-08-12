@@ -1,12 +1,11 @@
 import { drizzle } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
 import * as schema from "./schema";
-import { connect } from "bun";
 
 // Create the connection pool outside the function handler
 let poolConnection: mysql.Pool | null = null;
 
-const getPoolConnection = () => {
+export const getPoolConnection = () => {
   if (!poolConnection) {
     poolConnection = mysql.createPool({
       host: process.env.DB_HOST,
