@@ -14,7 +14,6 @@ app.use("*", sentry(SENTRY_OPTIONS));
 app.use("*", logger());
 
 app.get("/", (c) => c.json({ message: "Hello world" }));
-
 app.route("/properties", properties);
 
 export default app;
