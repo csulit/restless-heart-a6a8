@@ -29,7 +29,7 @@ export const propertyListings = async ({
 
   function withPagination<T extends MySqlSelect>(
     qb: T,
-    cursor: number = 1,
+    page: number = 1,
     pageSize: number = 10
   ) {
     return qb.limit(pageSize).offset((page - 1) * pageSize);
