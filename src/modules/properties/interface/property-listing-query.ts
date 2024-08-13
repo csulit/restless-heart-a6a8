@@ -2,9 +2,11 @@ import { preprocessNumber } from "@/utils/preprocess-number";
 import { z } from "zod";
 
 export const PropertyListingQuerySchema = z.object({
-  page: z
+  cursor: z
     .preprocess(preprocessNumber, z.number())
-    .describe("Page number for pagination")
+    .describe(
+      "Cursor (This 'Page' actually use cursor for react-query infinite query to work) number for pagination"
+    )
     .optional(),
   pageSize: z
     .preprocess(preprocessNumber, z.number())

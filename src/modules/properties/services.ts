@@ -6,11 +6,13 @@ import type { MapSearchQuery } from "./interface/map-search-query";
 import type { PropertyListingQuery } from "./interface/property-listing-query";
 
 export const propertyListings = async ({
-  page = 1,
+  cursor = 1,
   pageSize = 10,
   listingType,
   propertyType,
 }: PropertyListingQuery) => {
+  const page = cursor;
+
   const selectedProperties = {
     id: property.id,
     latitude: property.latitude,
@@ -27,7 +29,7 @@ export const propertyListings = async ({
 
   function withPagination<T extends MySqlSelect>(
     qb: T,
-    page: number = 1,
+    cursor: number = 1,
     pageSize: number = 10
   ) {
     return qb.limit(pageSize).offset((page - 1) * pageSize);

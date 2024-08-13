@@ -27,7 +27,7 @@ app.get(
   async (c) => {
     const query = c.req.valid("query");
     const properties = await propertyListings({
-      page: query.page || 1,
+      cursor: query.cursor || 1,
       pageSize: query.pageSize || 10,
       listingType: query.listingType,
       propertyType: query.propertyType,
