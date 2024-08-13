@@ -29,7 +29,7 @@ app.get(
     const properties = await propertyListings({
       page: query.page || 1,
       pageSize: query.pageSize || 10,
-      offerType: query.offerType,
+      listingType: query.listingType,
       propertyType: query.propertyType,
     });
     return c.json({ properties });

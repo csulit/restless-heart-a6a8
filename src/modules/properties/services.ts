@@ -8,7 +8,7 @@ import type { PropertyListingQuery } from "./interface/property-listing-query";
 export const propertyListings = async ({
   page = 1,
   pageSize = 10,
-  offerType,
+  listingType,
   propertyType,
 }: PropertyListingQuery) => {
   const selectedProperties = {
@@ -50,8 +50,8 @@ export const propertyListings = async ({
     .from(property)
     .where(
       and(
-        offerType
-          ? sql`JSON_EXTRACT(${property.jsonData}, '$.attributes.offer_type') = ${offerType}`
+        listingType
+          ? sql`JSON_EXTRACT(${property.jsonData}, '$.attributes.offer_type') = ${listingType}`
           : undefined,
         propertyType
           ? sql`JSON_EXTRACT(${

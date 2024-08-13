@@ -10,7 +10,7 @@ export const PropertyListingQuerySchema = z.object({
     .preprocess(preprocessNumber, z.number())
     .describe("Number of items per page")
     .optional(),
-  offerType: z.string().optional().describe("Type of offer (optional)"),
+  listingType: z.string().optional().describe("Type of offer (optional)"),
   propertyType: z.string().optional(),
 });
 
