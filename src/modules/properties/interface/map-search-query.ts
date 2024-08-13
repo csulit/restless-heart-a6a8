@@ -1,11 +1,5 @@
+import { preprocessNumber } from "@/utils/preprocess-number";
 import { z } from "zod";
-
-const preprocessNumber = (value: unknown) => {
-  if (typeof value === "string") {
-    return parseFloat(value);
-  }
-  return value;
-};
 
 export const MapSearchQuerySchema = z
   .object({

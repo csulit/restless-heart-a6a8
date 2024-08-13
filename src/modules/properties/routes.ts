@@ -4,14 +4,37 @@ import { property } from "@/database/schema";
 import { zValidator } from "@hono/zod-validator";
 import { MapSearchQuerySchema } from "./interface/map-search-query";
 import { destrucZodIssue } from "@/utils/destruc-zod-issue";
-import { propertyMapSearch } from "./services";
+import { propertyListings, propertyMapSearch } from "./services";
 import { jsonError, jsonSuccess } from "@/core";
+import { PropertyListingQuerySchema } from "./interface/property-listing-query";
 
 const app = new Hono();
 
-app.get("/", async (c) => {
-  return c.json({});
-});
+app.get(
+  "/",
+  zValidator("query", PropertyListingQuerySchema, (result, c) => {
+    if (result.success === false) {
+      return c.json(
+        jsonError({
+          status: "error",
+          message: "Invalid query parameters",
+          data: destrucZodIssue(result.error.errors),
+        }),
+        400
+      );
+    }
+  }),
+  async (c) => {
+    const query = c.req.valid("query");
+    const properties = await propertyListings({
+      page: query.page || 1,
+      pageSize: query.pageSize || 10,
+      offerType: query.offerType,
+      propertyType: query.propertyType,
+    });
+    return c.json({ properties });
+  }
+);
 
 app.post("/", async (c) => {
   const data = await c.req.json();
