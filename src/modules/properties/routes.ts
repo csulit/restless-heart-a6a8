@@ -33,7 +33,7 @@ route.get(
       propertyType: query.propertyType,
       sortOrder: query.sortOrder || "id",
     });
-    return c.json({ properties });
+    return c.json(properties);
   }
 );
 
@@ -70,7 +70,7 @@ route.get(
   async (c) => {
     const query = c.req.valid("query");
     const properties = await propertyMapSearch(query);
-    return c.json({ properties });
+    return c.json(properties);
   }
 );
 

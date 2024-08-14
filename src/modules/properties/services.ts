@@ -89,7 +89,9 @@ export const propertyListings = async ({
   const results = await withPagination(dynamicQuery, page, pageSize);
 
   return {
-    results,
+    properties: {
+      results,
+    },
     totalRecords,
     totalPages,
     currentPage: page,
@@ -171,7 +173,9 @@ export const propertyMapSearch = async ({
   const prevCursorValue = results.length > 0 && prevId ? results[0].id : null;
 
   return {
-    results,
+    properties: {
+      results,
+    },
     prevId,
     nextId,
     prevCursor: prevCursorValue,
