@@ -35,7 +35,7 @@ export const propertyListings = async ({
   function withPagination<T extends MySqlSelect>(
     qb: T,
     page: number = 1,
-    pageSize: number = 10
+    pageSize: number = 300
   ) {
     const order = {
       id: desc(property.id),
