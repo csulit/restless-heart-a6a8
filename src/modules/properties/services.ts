@@ -145,7 +145,7 @@ export const propertyMapSearch = async ({
       )
     );
 
-  const results = await query.orderBy(property.id).limit(200);
+  const results = await query.orderBy(property.id).limit(1000);
 
   const prevId = cursor
     ? await db
