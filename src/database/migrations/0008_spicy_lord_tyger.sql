@@ -1,0 +1,1 @@
+ALTER TABLE `properties` ADD `price` decimal(10,2) DEFAULT '0.00';

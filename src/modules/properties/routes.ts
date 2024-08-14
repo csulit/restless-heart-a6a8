@@ -31,6 +31,7 @@ app.get(
       pageSize: query.pageSize || 10,
       listingType: query.listingType,
       propertyType: query.propertyType,
+      sortOrder: query.sortOrder || "id",
     });
     return c.json({ properties });
   }

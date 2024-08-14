@@ -7,6 +7,7 @@ import {
   float,
   json,
   index,
+  decimal,
 } from "drizzle-orm/mysql-core";
 
 export const user = mysqlTable("users", {
@@ -51,6 +52,33 @@ export type LamudiDataLayer = {
   title: string;
 };
 
+export const listingRegion = mysqlTable("listing_regions", {
+  id: int("id").primaryKey().autoincrement(),
+  name: varchar("name", { length: 255 }).notNull(),
+});
+
+export type ListingRegion = InferSelectModel<typeof listingRegion>;
+
+export const listingCity = mysqlTable("listing_cities", {
+  id: int("id").primaryKey().autoincrement(),
+  name: varchar("name", { length: 255 }).notNull(),
+  regionId: int("region_id")
+    .references(() => listingRegion.id)
+    .notNull(),
+});
+
+export type ListingCity = InferSelectModel<typeof listingCity>;
+
+export const listingArea = mysqlTable("listing_areas", {
+  id: int("id").primaryKey().autoincrement(),
+  name: varchar("name", { length: 255 }).notNull(),
+  cityId: int("city_id")
+    .references(() => listingCity.id)
+    .notNull(),
+});
+
+export type ListingArea = InferSelectModel<typeof listingArea>;
+
 export const property = mysqlTable(
   "properties",
   {
@@ -58,6 +86,10 @@ export const property = mysqlTable(
     longitude: float("longitude").notNull(),
     latitude: float("latitude").notNull(),
     primaryImageUrl: varchar("primary_image_url", { length: 255 }),
+    buildingSize: float("building_size").default(0.0),
+    landSize: float("land_size").default(0.0),
+    yearBuilt: int("year_built"),
+    price: decimal("price", { scale: 2, precision: 13 }).default("0.00"),
     jsonData: json("json").$type<LamudiDataLayer>(),
     createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
   },

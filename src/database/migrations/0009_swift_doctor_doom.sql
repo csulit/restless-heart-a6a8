@@ -1,0 +1,1 @@
+ALTER TABLE `properties` MODIFY COLUMN `price` decimal(13,2) DEFAULT '0.00';

@@ -1,0 +1,1 @@
+ALTER TABLE `properties` ADD `land_size` float DEFAULT 0;

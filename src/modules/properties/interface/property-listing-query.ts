@@ -14,6 +14,9 @@ export const PropertyListingQuerySchema = z.object({
     .optional(),
   listingType: z.string().optional().describe("Type of offer (optional)"),
   propertyType: z.string().optional(),
+  sortOrder: z
+    .enum(["id", "newest", "price-low-to-high", "price-high-to-low"])
+    .optional(),
 });
 
 export type PropertyListingQuery = z.infer<typeof PropertyListingQuerySchema>;

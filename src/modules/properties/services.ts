@@ -1,5 +1,5 @@
 import db from "@/database";
-import { and, between, count, desc, gt, lt, sql } from "drizzle-orm";
+import { and, asc, between, count, desc, gt, lt, sql } from "drizzle-orm";
 import type { MySqlSelect } from "drizzle-orm/mysql-core";
 import { property } from "@/database/schema";
 import type { MapSearchQuery } from "./interface/map-search-query";
@@ -10,6 +10,7 @@ export const propertyListings = async ({
   pageSize = 10,
   listingType,
   propertyType,
+  sortOrder = "id",
 }: PropertyListingQuery) => {
   const page = cursor;
 
@@ -17,10 +18,14 @@ export const propertyListings = async ({
     id: property.id,
     latitude: property.latitude,
     longitude: property.longitude,
+    price: property.price,
+    landSize: property.landSize,
+    buildingSize: property.buildingSize,
+    yearBuilt: property.yearBuilt,
     primaryImageUrl: property.primaryImageUrl,
     offerType: sql`JSON_EXTRACT(${property.jsonData}, '$.attributes.offer_type')`,
     title: sql`JSON_EXTRACT(${property.jsonData}, '$.title')`,
-    price: sql`JSON_EXTRACT(${property.jsonData}, '$.attributes.price_formatted')`,
+    formatted_price: sql`JSON_EXTRACT(${property.jsonData}, '$.attributes.price_formatted')`,
     area: sql`JSON_EXTRACT(${property.jsonData}, '$.location.area')`,
     city: sql`JSON_EXTRACT(${property.jsonData}, '$.location.city')`,
     region: sql`JSON_EXTRACT(${property.jsonData}, '$.location.region')`,
@@ -32,7 +37,17 @@ export const propertyListings = async ({
     page: number = 1,
     pageSize: number = 10
   ) {
-    return qb.limit(pageSize).offset((page - 1) * pageSize);
+    const order = {
+      id: desc(property.id),
+      newest: desc(property.createdAt),
+      "price-low-to-high": asc(property.price),
+      "price-high-to-low": desc(property.price),
+    };
+
+    return qb
+      .limit(pageSize)
+      .offset((page - 1) * pageSize)
+      .orderBy(order[sortOrder as keyof typeof order]);
   }
 
   // Count total records
@@ -69,6 +84,7 @@ export const propertyListings = async ({
           : undefined
       )
     );
+
   const dynamicQuery = query.$dynamic();
   const results = await withPagination(dynamicQuery, page, pageSize);
 
@@ -94,19 +110,6 @@ export const propertyMapSearch = async ({
   cursor,
   prevCursor,
 }: MapSearchQuery) => {
-  function withBoundingboxSearch<T extends MySqlSelect>(qb: T) {
-    return qb.where(
-      and(
-        between(property.latitude, minLat, maxLat),
-        between(property.longitude, minLong, maxLong),
-        sql`ST_distance_sphere(
-          point(${pointOfInterestLong}, ${pointOfInterestLat}), 
-          point(${property.longitude}, ${property.latitude})
-        ) * 0.001 <= ${distanceInKilometers}`
-      )
-    );
-  }
-
   const query = db
     .select({
       id: property.id,

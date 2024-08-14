@@ -1,0 +1,1 @@
+ALTER TABLE `properties` ADD `building_size` float DEFAULT 0;
