@@ -1,23 +1,10 @@
-interface JsonResponseOptions {
-  status: string;
-  data: any;
-}
+import type { JsonResponseOptions } from "./interface";
 
-interface JsonErrorOptions extends JsonResponseOptions {
-  message: string;
-}
-
-export const jsonSuccess = (options: JsonResponseOptions) => {
+export const jsonResponse = (options: JsonResponseOptions) => {
+  const { status, data, message } = options;
   return {
-    status: "success",
-    data: options.data,
-  };
-};
-
-export const jsonError = (options: JsonErrorOptions) => {
-  return {
-    status: "error",
-    data: options.data,
-    message: options.message,
+    status,
+    data,
+    message,
   };
 };

@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "bun --watch --env-file=.env.development.local src/server.ts",
-    "prod": "bun --env-file=.env.production.local src/server.ts",
+    "prod:test": "bun --env-file=.env.production.local src/server.ts",
     "db:migrate": "bun --env-file=.env.development.local migrate.ts",
     "db:generate": "drizzle-kit generate",
     "db:drop": "drizzle-kit drop",

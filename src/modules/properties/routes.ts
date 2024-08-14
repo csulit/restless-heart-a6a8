@@ -5,20 +5,20 @@ import { zValidator } from "@hono/zod-validator";
 import { MapSearchQuerySchema } from "./interface/map-search-query";
 import { destrucZodIssue } from "@/utils/destruc-zod-issue";
 import { propertyListings, propertyMapSearch } from "./services";
-import { jsonError, jsonSuccess } from "@/core";
 import { PropertyListingQuerySchema } from "./interface/property-listing-query";
+import { jsonResponse } from "@/core";
 
-const app = new Hono();
+const route = new Hono();
 
-app.get(
+route.get(
   "/",
   zValidator("query", PropertyListingQuerySchema, (result, c) => {
     if (result.success === false) {
       return c.json(
-        jsonError({
+        jsonResponse({
           status: "error",
-          message: "Invalid query parameters",
           data: destrucZodIssue(result.error.errors),
+          message: "Invalid query parameters",
         }),
         400
       );
@@ -37,7 +37,7 @@ app.get(
   }
 );
 
-app.post("/", async (c) => {
+route.post("/", async (c) => {
   const data = await c.req.json();
   const create = await db.insert(property).values({
     latitude: data.latitude,
@@ -46,22 +46,22 @@ app.post("/", async (c) => {
     jsonData: data.jsonData,
   });
   return c.json(
-    jsonSuccess({
+    jsonResponse({
       status: "success",
       data: { id: create[0].insertId },
     })
   );
 });
 
-app.get(
+route.get(
   "/map-search",
   zValidator("query", MapSearchQuerySchema, (result, c) => {
     if (result.success === false) {
       return c.json(
-        jsonError({
+        jsonResponse({
           status: "error",
-          message: "Invalid query parameters",
           data: destrucZodIssue(result.error.errors),
+          message: "Invalid query parameters",
         }),
         400
       );
@@ -74,8 +74,8 @@ app.get(
   }
 );
 
-app.get("/:id", async (c) => {
+route.get("/:id", async (c) => {
   return c.json({});
 });
 
-export default app;
+export default route;

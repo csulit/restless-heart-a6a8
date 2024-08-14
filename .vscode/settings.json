@@ -1,7 +1,7 @@
 {
   "editor.tabSize": 2,
-  "editor.fontSize": 12.5,
-  "explorer.compactFolders": false,
   "editor.wordWrap": "on",
-  "chat.editor.wordWrap": "on"
+  "editor.fontSize": 12.5,
+  "chat.editor.wordWrap": "on",
+  "explorer.compactFolders": false
 }

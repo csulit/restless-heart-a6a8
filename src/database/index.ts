@@ -8,10 +8,10 @@ let poolConnection: mysql.Pool | null = null;
 export const getPoolConnection = () => {
   if (!poolConnection) {
     poolConnection = mysql.createPool({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      database: process.env.DB_NAME,
-      password: process.env.DB_PASSWORD,
+      host: Bun.env["DB_HOST"],
+      user: Bun.env["DB_USER"],
+      database: Bun.env["DB_NAME"],
+      password: Bun.env["DB_PASSWORD"],
       waitForConnections: true,
       connectionLimit: 10, // Adjust based on your database's capacity
       queueLimit: 0,
