@@ -28,7 +28,7 @@ route.get(
     const query = c.req.valid("query");
     const properties = await propertyListings({
       cursor: query.cursor || 1,
-      pageSize: query.pageSize || 10,
+      pageSize: query.pageSize || 300,
       listingType: query.listingType,
       propertyType: query.propertyType,
       sortOrder: query.sortOrder || "id",
