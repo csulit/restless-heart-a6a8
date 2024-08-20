@@ -50,8 +50,27 @@ export const propertyListings = async ({
       .orderBy(order[sortOrder as keyof typeof order]);
   }
 
+  const filter = and(
+    listingType
+      ? sql`JSON_EXTRACT(${property.jsonData}, '$.attributes.offer_type') = ${listingType}`
+      : undefined,
+    propertyType
+      ? sql`JSON_EXTRACT(${
+          property.jsonData
+        }, '$.attributes.attribute_set_name') = ${propertyType.split("::")[0]}`
+      : undefined,
+    propertyType
+      ? sql`JSON_EXTRACT(${property.jsonData}, '$.attributes.subcategory') = ${
+          propertyType.split("::")[1]
+        }`
+      : undefined
+  );
+
   // Count total records
-  const totalRecordsQuery = db.select({ count: count() }).from(property);
+  const totalRecordsQuery = db
+    .select({ count: count() })
+    .from(property)
+    .where(filter);
   const totalRecordsResult = await totalRecordsQuery;
   const totalRecords = totalRecordsResult[0].count;
 
@@ -62,28 +81,7 @@ export const propertyListings = async ({
   const nextPage = page < totalPages ? page + 1 : null;
   const previousPage = page > 1 ? page - 1 : null;
 
-  const query = db
-    .select(selectedProperties)
-    .from(property)
-    .where(
-      and(
-        listingType
-          ? sql`JSON_EXTRACT(${property.jsonData}, '$.attributes.offer_type') = ${listingType}`
-          : undefined,
-        propertyType
-          ? sql`JSON_EXTRACT(${
-              property.jsonData
-            }, '$.attributes.attribute_set_name') = ${
-              propertyType.split("::")[0]
-            }`
-          : undefined,
-        propertyType
-          ? sql`JSON_EXTRACT(${
-              property.jsonData
-            }, '$.attributes.subcategory') = ${propertyType.split("::")[1]}`
-          : undefined
-      )
-    );
+  const query = db.select(selectedProperties).from(property).where(filter);
 
   const dynamicQuery = query.$dynamic();
   const results = await withPagination(dynamicQuery, page, pageSize);
