@@ -190,7 +190,7 @@ export const propertyMapSearch = async ({
     },
     prevId,
     nextId,
-    totalRecords,
+    totalRecords: totalRecords?.[0].count || 0,
     prevCursor: prevCursorValue,
   };
 };
