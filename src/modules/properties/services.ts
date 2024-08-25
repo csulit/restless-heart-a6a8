@@ -145,6 +145,20 @@ export const propertyMapSearch = async ({
       )
     );
 
+  const totalRecords = await db
+    .select({ count: count() })
+    .from(property)
+    .where(
+      and(
+        between(property.latitude, minLat, maxLat),
+        between(property.longitude, minLong, maxLong),
+        sql`ST_distance_sphere(
+          point(${pointOfInterestLong}, ${pointOfInterestLat}), 
+          point(${property.longitude}, ${property.latitude})
+        ) * 0.001 <= ${distanceInKilometers}`
+      )
+    );
+
   const results = await query.orderBy(property.id).limit(1000);
 
   const prevId = cursor
@@ -176,6 +190,7 @@ export const propertyMapSearch = async ({
     },
     prevId,
     nextId,
+    totalRecords,
     prevCursor: prevCursorValue,
   };
 };
