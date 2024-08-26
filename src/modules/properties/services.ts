@@ -184,12 +184,43 @@ export const propertyMapSearch = async ({
 
   const prevCursorValue = results.length > 0 && prevId ? results[0].id : null;
 
+  const propertyTypesCountQuery = db
+    .select({
+      propertyType: sql`JSON_EXTRACT(${property.jsonData}, '$.attributes.attribute_set_name')`,
+      count: count(),
+    })
+    .from(property)
+    .where(
+      and(
+        between(property.latitude, minLat, maxLat),
+        between(property.longitude, minLong, maxLong),
+        sql`ST_distance_sphere(
+          point(${pointOfInterestLong}, ${pointOfInterestLat}), 
+          point(${property.longitude}, ${property.latitude})
+        ) * 0.001 <= ${distanceInKilometers}`
+      )
+    )
+    .groupBy(
+      sql`JSON_EXTRACT(${property.jsonData}, '$.attributes.attribute_set_name')`
+    );
+
+  const propertyTypesCountQueryResult = await propertyTypesCountQuery;
+
+  const propertyTypes = propertyTypesCountQueryResult.map((row) => ({
+    propertyType:
+      row.propertyType === "Commercial" ? "Warehouse" : row.propertyType,
+    count: row.count,
+  }));
+
+  console.log(propertyTypes);
+
   return {
     properties: {
       results,
     },
     prevId,
     nextId,
+    propertyTypes,
     totalRecords: totalRecords?.[0].count || 0,
     prevCursor: prevCursorValue,
   };
