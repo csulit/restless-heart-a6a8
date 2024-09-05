@@ -8,6 +8,7 @@ import {
   json,
   index,
   decimal,
+  boolean,
 } from "drizzle-orm/mysql-core";
 
 export const user = mysqlTable("users", {
@@ -91,6 +92,7 @@ export const property = mysqlTable(
     yearBuilt: int("year_built"),
     price: decimal("price", { scale: 2, precision: 13 }).default("0.00"),
     jsonData: json("json").$type<LamudiDataLayer>(),
+    migrated: boolean("migrated").default(false),
     createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
   },
   (table) => ({

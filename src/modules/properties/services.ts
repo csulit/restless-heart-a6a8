@@ -212,8 +212,6 @@ export const propertyMapSearch = async ({
     count: row.count,
   }));
 
-  console.log(propertyTypes);
-
   return {
     properties: {
       results,
